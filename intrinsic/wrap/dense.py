@@ -2,8 +2,9 @@
 Dense wrapper for intrinsic dimensionality estimation
 """
 import torch
+from torch import nn
 
-class WrapDense(torch.nn.Module):
+class WrapDense(nn.Module):
 
     def __init__(self, module, intrinsic_dimension, device=0, verbose=False):
         """
@@ -14,11 +15,12 @@ class WrapDense(torch.nn.Module):
         :param device: cuda device id
         :param verbose: if things should be printed out
         """
-        super(IntrinsicDimensionWrapper, self).__init__()
+        super(WrapDense, self).__init__()
 
         self.verbose = verbose
 
-        self.m = [module]  # Hide this from inspection by get_parameters()
+        # Hide this from inspection by get_parameters()
+        self.m = [module]
 
         self.name_base_localname = []
 
@@ -29,7 +31,7 @@ class WrapDense(torch.nn.Module):
         self.random_matrix = dict()
 
         # Parameter vector that is updated, initialised with zeros as per text: \theta^{d}
-        V = torch.nn.Parameter(torch.zeros((intrinsic_dimension, 1)).to(device))
+        V = nn.Parameter(torch.zeros((intrinsic_dimension, 1)).to(device))
         self.register_parameter('V', V)
         v_size = (intrinsic_dimension,)
 
