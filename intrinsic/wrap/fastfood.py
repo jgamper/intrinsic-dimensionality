@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 import numpy as np
-from intrinsic.utils.fastfood import fast_walsh_hadamard_torched as fwh
+from intrinsic.utils.fastfood import fastfood_torched as fwh
 
 class WrapFastfood(nn.Module):
 
@@ -24,7 +24,7 @@ class WrapFastfood(nn.Module):
 
         # Parameter vector that is updated
         # Initialised with zeros as per text: \theta^{d}
-        V = nn.Parameter(torch.zeros((intrinsic_dimension, 1)).to(device))
+        V = nn.Parameter(torch.zeros((intrinsic_dimension)).to(device))
         self.register_parameter('V', V)
         v_size = (intrinsic_dimension, )
 
@@ -54,7 +54,7 @@ class WrapFastfood(nn.Module):
             DD = np.prod(init_shape)
 
             # Fastfood transform te replace dence P
-            ray = fwh(self.V, DD)
+            ray = fwh(self.V, DD).view(init_shape)
 
             param = self.initial_value[name] + ray
 

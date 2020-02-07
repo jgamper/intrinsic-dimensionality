@@ -41,7 +41,7 @@ def fast_walsh_hadamard_torched(x, axis=0, normalize=False):
 
     return ret
 
-def fastfood_torched(x, DD):
+def fastfood_torched(x, DD, device=0):
     """
     Fastfood transform
     :param x: array of dd dimension
@@ -54,22 +54,21 @@ def fastfood_torched(x, DD):
 
     # Binary scaling matrix where $B_{i,i} \in \{\pm 1 \}$ drawn iid
     BB = torch.FloatTensor(LL).uniform_(0, 2).type(torch.LongTensor)
-    BB = (BB * 2 - 1).type(torch.FloatTensor)
+    BB = (BB * 2 - 1).type(torch.FloatTensor).to(device)
 
     # Random permutation matrix
-    Pi = torch.LongTensor(np.random.permutation(LL))
+    Pi = torch.LongTensor(np.random.permutation(LL)).to(device)
 
     # Gaussian scaling matrix, whose elements $G_{i,i} \sim \mathcal{N}(0, 1)$
-    GG = torch.FloatTensor(LL,).normal_()
+    GG = torch.FloatTensor(LL,).normal_().to(device)
 
-    divisor = torch.sqrt(LL * torch.sum(torch.pow(GG, 2)))
+    divisor = torch.sqrt(LL * torch.sum(torch.pow(GG, 2))).to(device)
 
     # Padd x if needed
     dd_pad = F.pad(x, pad=(0, LL - dd), value=0, mode='constant')
 
     # From left to right HGPiH(BX), where H is Walsh-Hadamard matrix
     mul_1 = torch.mul(BB, dd_pad)
-
     # HGPi(HBX)
     mul_2 = fast_walsh_hadamard_torched(mul_1, 0, normalize=False)
 
