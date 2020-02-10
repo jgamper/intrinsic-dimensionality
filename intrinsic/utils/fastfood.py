@@ -41,14 +41,12 @@ def fast_walsh_hadamard_torched(x, axis=0, normalize=False):
 
     return ret
 
-def fastfood_torched(x, DD, device=0):
+def fastfood_vars(DD, device=0):
     """
-    Fastfood transform
-    :param x: array of dd dimension
+    Returns parameters for fast food transform
     :param DD: desired dimension
     :return:
     """
-    dd = x.size(0)
     ll = int(np.ceil(np.log(DD) / np.log(2)))
     LL = 2 ** ll
 
@@ -63,6 +61,25 @@ def fastfood_torched(x, DD, device=0):
     GG = torch.FloatTensor(LL,).normal_().to(device)
 
     divisor = torch.sqrt(LL * torch.sum(torch.pow(GG, 2))).to(device)
+
+    return [BB, Pi, GG, divisor, LL]
+
+def fastfood_torched(x, DD, param_list=None, device=0):
+    """
+    Fastfood transform
+    :param x: array of dd dimension
+    :param DD: desired dimension
+    :return:
+    """
+    dd = x.size(0)
+
+    if not param_list:
+
+        BB, Pi, GG, divisor, LL = fastfood_vars(DD, device=device)
+
+    else:
+
+        BB, Pi, GG, divisor, LL = param_list
 
     # Padd x if needed
     dd_pad = F.pad(x, pad=(0, LL - dd), value=0, mode='constant')
