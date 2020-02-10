@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 import numpy as np
-from intrinsic.utils.fastfood import fastfood_torched as fwh
+from intrinsic.utils.fastfood import fastfood_torched, fastfood_vars
 
 class WrapFastfood(nn.Module):
 
@@ -22,6 +22,9 @@ class WrapFastfood(nn.Module):
         # Stores the initial value: \theta_{0}^{D}
         self.initial_value = dict()
 
+        # Fastfood parameters
+        self.fastfood_params = {}
+
         # Parameter vector that is updated
         # Initialised with zeros as per text: \theta^{d}
         V = nn.Parameter(torch.zeros((intrinsic_dimension)).to(device))
@@ -36,6 +39,10 @@ class WrapFastfood(nn.Module):
                 # Saves the initial values of the initialised parameters from param.data and sets them to no grad.
                 # (initial values are the 'origin' of the search)
                 self.initial_value[name] = v0 = param.clone().detach().requires_grad_(False).to(device)
+
+                # Generate fastfood parameters
+                DD = np.prod(v0.size())
+                self.fastfood_params[name] = fastfood_vars(DD, device)
 
                 base, localname = module, name
                 while '.' in localname:
@@ -54,7 +61,7 @@ class WrapFastfood(nn.Module):
             DD = np.prod(init_shape)
 
             # Fastfood transform te replace dence P
-            ray = fwh(self.V, DD).view(init_shape)
+            ray = fastfood_torched(self.V, DD, self.fastfood_params[name]).view(init_shape)
 
             param = self.initial_value[name] + ray
 

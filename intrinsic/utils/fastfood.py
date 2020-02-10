@@ -53,14 +53,17 @@ def fastfood_vars(DD, device=0):
     # Binary scaling matrix where $B_{i,i} \in \{\pm 1 \}$ drawn iid
     BB = torch.FloatTensor(LL).uniform_(0, 2).type(torch.LongTensor)
     BB = (BB * 2 - 1).type(torch.FloatTensor).to(device)
+    BB.requires_grad = False
 
     # Random permutation matrix
     Pi = torch.LongTensor(np.random.permutation(LL)).to(device)
+    Pi.requires_grad = False
 
     # Gaussian scaling matrix, whose elements $G_{i,i} \sim \mathcal{N}(0, 1)$
     GG = torch.FloatTensor(LL,).normal_().to(device)
+    GG.requires_grad = False
 
-    divisor = torch.sqrt(LL * torch.sum(torch.pow(GG, 2))).to(device)
+    divisor = torch.sqrt(LL * torch.sum(torch.pow(GG, 2)))
 
     return [BB, Pi, GG, divisor, LL]
 
