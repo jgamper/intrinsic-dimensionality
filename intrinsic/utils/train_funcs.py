@@ -1,6 +1,21 @@
 import torch
 import torch.nn.functional as F
-from intrinsic.utils.general import parameter_count
+
+def parameter_count(model):
+    """
+    Counts the number of model parameters that require grad update
+    :param model:
+    :return:
+    """
+    param_tot=0
+    for name, param in model.named_parameters():
+        if param.requires_grad:
+            #print(name, param.data.size(), v_size)
+            param_size = 1
+            for d in list(param.data.size()):
+                param_size *= d
+            param_tot += param_size
+    return param_tot
 
 def train(model, train_loader, optimizer, epoch_num, batch_log_interval, device):
     model.train()
