@@ -7,18 +7,21 @@ def parameter_count(model):
     :param model:
     :return:
     """
-    param_tot=0
+    grad_total=0
+    total = 0
     for name, param in model.named_parameters():
+        param_size = 1
+        for d in list(param.data.size()):
+            param_size *= d
+        total += param_size
         if param.requires_grad:
-            #print(name, param.data.size(), v_size)
-            param_size = 1
-            for d in list(param.data.size()):
-                param_size *= d
-            param_tot += param_size
-    return param_tot
+            grad_total += param_size
+
+    return grad_total, total
 
 def train(model, train_loader, optimizer, epoch_num, batch_log_interval, device):
     model.train()
+    train_loss, correct = 0., 0
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
@@ -26,10 +29,16 @@ def train(model, train_loader, optimizer, epoch_num, batch_log_interval, device)
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
+        train_loss += loss.item()
+        pred = output.detach().max(1, keepdim=True)[1]  # get the index of the max log-probability
+        correct += pred.eq(target.detach().view_as(pred)).sum().item()
         if batch_idx % batch_log_interval == 0:
             print('Train Epoch: {} [{: 6d}/{: 6d} ({:2.0f}%)]\tLoss: {:.4f}'.format(
                 epoch_num, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item()))
+    train_loss /= len(train_loader.dataset)
+    pct_correct = 100. * correct / len(train_loader.dataset)
+    return pct_correct, train_loss
 
 def test(model, test_loader, device):
     model.eval()
@@ -46,7 +55,7 @@ def test(model, test_loader, device):
     pct_correct = 100. * correct / len(test_loader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.1f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset), pct_correct))
-    return pct_correct
+    return pct_correct, test_loss
 
 def use_model(model, device, lr):  # , **kwargs
     _model = model.to(device)
@@ -65,9 +74,24 @@ def get_stats_for(model, n_epochs, train_loader, test_loader, batch_log_interval
     :param lr:
     :return:
     """
+    highest = 0
     print("Total model parameters : %d" % (parameter_count(model),) )
     _model, optimizer = use_model(model, device, lr)
     for epoch in range(1, n_epochs + 1):
         train(model, train_loader, optimizer, epoch, batch_log_interval, device)
         pct_correct = test(_model, test_loader, device)
+        if pct_correct > highest:
+            highest = pct_correct
+        print()
     return pct_correct
+
+def get_exponential_range(exp_max=5, num_max=5):
+    """
+    Returns a range of numbers raising exponentialy
+    :param exp_max:
+    :param num_max:
+    :return:
+    """
+    array = (i * 10 ** exp for exp in range(2, exp_max) for i in range(1, num_max))
+    return array
+
