@@ -1,23 +1,25 @@
 import torch
 import torch.nn.functional as F
 
-def parameter_count(model):
+def parameter_count(model, just_grad=True):
     """
     Counts the number of model parameters that require grad update
     :param model:
+    :param just_grad: If true counts only parameters that require gradient compute
     :return:
     """
-    grad_total=0
-    total = 0
+    total=0
     for name, param in model.named_parameters():
+        print(name)
         param_size = 1
         for d in list(param.data.size()):
             param_size *= d
-        total += param_size
-        if param.requires_grad:
-            grad_total += param_size
-
-    return grad_total, total
+        if just_grad:
+            if param.requires_grad:
+                total += param_size
+        else:
+            total += param_size
+    return total
 
 def train(model, train_loader, optimizer, epoch_num, batch_log_interval, device):
     model.train()
@@ -92,6 +94,6 @@ def get_exponential_range(exp_max=5, num_max=5):
     :param num_max:
     :return:
     """
-    array = (i * 10 ** exp for exp in range(2, exp_max) for i in range(1, num_max))
+    array = (i * 10 ** exp for exp in range(2, exp_max) for i in range(1, num_max+1))
     return array
 

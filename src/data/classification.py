@@ -3,8 +3,7 @@ from torchvision import transforms
 from torchvision import datasets
 from torchvision.datasets import ImageFolder
 
-def get_loaders_mnist(root, use_cuda, batch_size=32,
-                      means=((0.1307,), (0.3081,))):
+def get_loaders_mnist(root, use_cuda, batch_size, stats):
     """
 
     :param mnist_root:
@@ -16,7 +15,7 @@ def get_loaders_mnist(root, use_cuda, batch_size=32,
 
     mnist_transform = transforms.Compose([
                            transforms.ToTensor(),
-                           transforms.Normalize(**means)
+                           transforms.Normalize(stats)
                        ])
 
     train_loader = torch.utils.data.DataLoader(
@@ -29,8 +28,7 @@ def get_loaders_mnist(root, use_cuda, batch_size=32,
 
     return train_loader, test_loader
 
-def get_loaders_cifar10(root, use_cuda, batch_size=32,
-                        means=((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))):
+def get_loaders_cifar10(root, use_cuda, batch_size, stats):
     """
 
     :param mnist_root:
@@ -42,7 +40,7 @@ def get_loaders_cifar10(root, use_cuda, batch_size=32,
 
     transform_cifar10 = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize(**means),
+        transforms.Normalize(**stats),
     ])
 
     train_loader = torch.utils.data.DataLoader(
@@ -55,8 +53,7 @@ def get_loaders_cifar10(root, use_cuda, batch_size=32,
 
     return train_loader, test_loader
 
-def get_loaders_cifar100(root, use_cuda, batch_size=32,
-                         means=((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))):
+def get_loaders_cifar100(root, use_cuda, batch_size, stats):
     """
 
     :param mnist_root:
@@ -68,7 +65,7 @@ def get_loaders_cifar100(root, use_cuda, batch_size=32,
 
     transform_cifar100 = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize(**means),
+        transforms.Normalize(**stats),
     ])
 
     train_loader = torch.utils.data.DataLoader(
@@ -81,7 +78,7 @@ def get_loaders_cifar100(root, use_cuda, batch_size=32,
 
     return train_loader, test_loader
 
-def get_loaders_custom(root, use_cuda, batch_size=32, means=None):
+def get_loaders_custom(root, use_cuda, batch_size=32, stats=None):
     """
 
     :param mnist_root:
@@ -92,23 +89,23 @@ def get_loaders_custom(root, use_cuda, batch_size=32, means=None):
     """
     loader_kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
 
-    if means:
+    if stats:
         transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize(**means),
+            transforms.Normalize(**stats),
         ])
 
     train_loader = torch.utils.data.DataLoader(
-        ImageFolder(root, transform=transform if means else None),
+        ImageFolder(root, transform=transform if stats else None),
         batch_size=batch_size, shuffle=True, **loader_kwargs)
 
     test_loader = torch.utils.data.DataLoader(
-        ImageFolder(root, transform=transform if means else None),
+        ImageFolder(root, transform=transform if stats else None),
         batch_size=1000, shuffle=False, **loader_kwargs)
 
     return train_loader, test_loader
 
-def get_loaders(root,  name, use_cuda, batch_size=32, means=None):
+def get_loaders(root,  name, use_cuda, batch_size=32, stats=None):
     """
 
     :param root:
@@ -127,6 +124,6 @@ def get_loaders(root,  name, use_cuda, batch_size=32, means=None):
 
     func = available[name]
 
-    train_loader, test_loader = func(root, use_cuda, batch_size, means)
+    train_loader, test_loader = func(root, use_cuda, batch_size, stats)
 
     return train_loader, test_loader

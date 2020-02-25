@@ -62,14 +62,7 @@ def add_paths_to_config(config):
 
 
     # Get paths for saving models, and logging
-    if config.checkpoint_timestamp:
-        experiment_path = os.path.join(results_directory, config.checkpoint_timestamp, 'experiment_results')
-        assert os.path.exists(experiment_path), 'The checkpointed experiment does not exist!'
-        save_models_directory = os.path.join(experiment_path, 'model_snapshots')
-        tensorboard_dir = os.path.join(experiment_path, 'tensorboard_dir')
-        save_pred = os.path.join(experiment_path, 'predictions')
-    else:
-        save_models_directory, tensorboard_dir, save_pred = create_results_dir(results_directory)
+    save_models_directory, tensorboard_dir, save_pred = create_results_dir(results_directory)
 
     config.save_models_directory = save_models_directory
     config.tensorboard_dir = tensorboard_dir
