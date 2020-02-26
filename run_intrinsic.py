@@ -59,6 +59,7 @@ def main(config):
 
         for epoch in range(1, config.n_epochs + 1):
             if early_stop:
+                print('Stopping')
                 break
 
             train_correct, train_loss = train(model, train_loader, optimizer,
@@ -70,12 +71,11 @@ def main(config):
 
             if test_correct < highest:
                 counter += 1
-                print('Early stopping')
                 if counter >= config.patience:
+                    print('Early stopping should happen')
                     early_stop = True
             else:
                 highest = test_correct
-                counter = 0
 
             writer.add_scalar('Int dim {}/training/loss', train_loss, epoch)
             writer.add_scalar('Int dim {}/training/acc', train_correct, epoch)

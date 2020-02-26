@@ -5,7 +5,7 @@ num_max = 5
 lr = 0.0003
 batch_log_interval = 600
 device_id = 0
-patience = 4
+patience = 3
 
 
 tasks = {'CIFAR100': {'root': '/home/jevjev/Dropbox/Projects/datasets',
