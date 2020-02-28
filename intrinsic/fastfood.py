@@ -1,3 +1,6 @@
+"""
+Fastfood wrapper for intrinsic dimensionality estimation
+"""
 import torch
 from torch import nn
 import numpy as np

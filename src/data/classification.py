@@ -1,3 +1,4 @@
+import os
 import torch
 from torchvision import transforms
 from torchvision import datasets
@@ -78,10 +79,11 @@ def get_loaders_cifar100(root, use_cuda, batch_size, stats):
 
     return train_loader, test_loader
 
-def get_loaders_custom(root, use_cuda, batch_size=32, stats=None):
+def get_loaders_custom(root_train, root_valid, use_cuda, batch_size=32, stats=None):
     """
 
-    :param mnist_root:
+    :param root_train:
+    :param root_val:
     :param use_cuda:
     :param batch_size:
     :param means: normalising stats
@@ -91,16 +93,17 @@ def get_loaders_custom(root, use_cuda, batch_size=32, stats=None):
 
     if stats:
         transform = transforms.Compose([
+            transforms.Resize(224),
             transforms.ToTensor(),
             transforms.Normalize(**stats),
         ])
 
     train_loader = torch.utils.data.DataLoader(
-        ImageFolder(root, transform=transform if stats else None),
+        ImageFolder(root_train, transform=transform if stats else None),
         batch_size=batch_size, shuffle=True, **loader_kwargs)
 
     test_loader = torch.utils.data.DataLoader(
-        ImageFolder(root, transform=transform if stats else None),
+        ImageFolder(root_valid, transform=transform if stats else None),
         batch_size=1000, shuffle=False, **loader_kwargs)
 
     return train_loader, test_loader
@@ -118,12 +121,20 @@ def get_loaders(root,  name, use_cuda, batch_size=32, stats=None):
     available = {'MNIST': get_loaders_mnist,
                  'CIFAR10': get_loaders_cifar10,
                 'CIFAR100': get_loaders_cifar100,
-                 'CUSTOM': get_loaders_custom}
+                 'BREAST': get_loaders_custom}
 
     assert any(name == dts for dts in list(available.keys())), 'Selected data should be '+' '.join(available)
 
     func = available[name]
 
-    train_loader, test_loader = func(root, use_cuda, batch_size, stats)
+    if name in ['MNIST', 'CIFAR10', 'CIFAR100']:
+
+        train_loader, test_loader = func(root, use_cuda, batch_size, stats)
+
+    else:
+        print(name)
+        root_train = os.path.join(root, 'train')
+        root_valid= os.path.join(root, 'test')
+        train_loader, test_loader = func(root_train, root_valid, use_cuda, batch_size, stats)
 
     return train_loader, test_loader
