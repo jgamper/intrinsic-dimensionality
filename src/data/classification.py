@@ -16,7 +16,7 @@ def get_loaders_mnist(root, use_cuda, batch_size, stats):
 
     mnist_transform = transforms.Compose([
                            transforms.ToTensor(),
-                           transforms.Normalize(stats)
+                           transforms.Normalize(**stats)
                        ])
 
     train_loader = torch.utils.data.DataLoader(
@@ -121,7 +121,9 @@ def get_loaders(root,  name, use_cuda, batch_size=32, stats=None):
     available = {'MNIST': get_loaders_mnist,
                  'CIFAR10': get_loaders_cifar10,
                 'CIFAR100': get_loaders_cifar100,
-                 'BREAST': get_loaders_custom}
+                 'BREAST': get_loaders_custom,
+                 'COLON': get_loaders_custom,
+                 'LYMPHOMA': get_loaders_custom}
 
     assert any(name == dts for dts in list(available.keys())), 'Selected data should be '+' '.join(available)
 
