@@ -3,7 +3,7 @@ import argparse
 from src.config import config
 os.environ["CUDA_VISIBLE_DEVICES"] = str(config.device_id)
 from intrinsic.fastfood import WrapFastfood
-from src.models import get_resnet
+from src.models import get_resnet, get_resnet_mean_var
 from src.data import get_loaders
 from src.utils import train, test, use_model, parameter_count
 from src.utils import get_writer, add_paths_to_config, get_exponential_range
@@ -44,7 +44,7 @@ def main(config):
 
 
         # Get model and wrap it in fastfood
-        model = get_resnet("resnet18", num_classes, pretrained=False).cuda()
+        model = get_resnet_mean_var("resnet18", num_classes).cuda()
         model = WrapFastfood(model, intrinsic_dimension=int_dim,
                              device=config.device)
 

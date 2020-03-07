@@ -10,7 +10,6 @@ def parameter_count(model, just_grad=True):
     """
     total=0
     for name, param in model.named_parameters():
-        print(name)
         param_size = 1
         for d in list(param.data.size()):
             param_size *= d
@@ -81,11 +80,10 @@ def get_stats_for(model, n_epochs, train_loader, test_loader, batch_log_interval
     _model, optimizer = use_model(model, device, lr)
     for epoch in range(1, n_epochs + 1):
         train(model, train_loader, optimizer, epoch, batch_log_interval, device)
-        pct_correct = test(_model, test_loader, device)
+        pct_correct, test_loss = test(_model, test_loader, device)
         if pct_correct > highest:
             highest = pct_correct
-        print()
-    return pct_correct
+    return highest
 
 def get_exponential_range(exp_max=5, num_max=5):
     """
