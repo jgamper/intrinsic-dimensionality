@@ -77,4 +77,4 @@ def get_resnet_mean_var(encoder_name, num_classes):
                                                                     mean=mean, std=std)
     mean_var.load_state_dict(mean_var_dict)
 
-    return 
+    return mean_var
