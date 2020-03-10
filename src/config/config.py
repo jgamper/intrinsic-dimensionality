@@ -8,7 +8,11 @@ device_id = 1
 patience = 3
 
 
-tasks = {'CIFAR100': {'root': '/home/jevjev/Dropbox/Projects/datasets',
+tasks = {'MNIST': {'root': '/home/jevjev/Dropbox/Projects/datasets',
+                    'stats': {'mean': (0.1307), 'std': (0.3081)},
+                    'batch_size': 32,
+                    'num_classes': 10},
+        'CIFAR100': {'root': '/home/jevjev/Dropbox/Projects/datasets',
                     'stats': {'mean': (0.4914, 0.4822, 0.4465), 'std': (0.2023, 0.1994, 0.2010)},
                     'batch_size': 32,
                     'num_classes': 100},

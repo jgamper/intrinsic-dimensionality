@@ -16,7 +16,7 @@ def get_loaders_mnist(root, use_cuda, batch_size, stats):
 
     mnist_transform = transforms.Compose([
                            transforms.ToTensor(),
-                           transforms.Normalize(**stats)
+                           transforms.Normalize((0.1307,), (0.3081,))
                        ])
 
     train_loader = torch.utils.data.DataLoader(
