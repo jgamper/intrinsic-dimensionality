@@ -20,7 +20,7 @@ def parameter_count(model, just_grad=True):
             total += param_size
     return total
 
-def train(model, train_loader, optimizer, epoch_num, batch_log_interval, device):
+def train(model, train_loader, optimizer, device):
     model.train()
     train_loss, correct = 0., 0
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -33,10 +33,7 @@ def train(model, train_loader, optimizer, epoch_num, batch_log_interval, device)
         train_loss += loss.item()
         pred = output.detach().max(1, keepdim=True)[1]  # get the index of the max log-probability
         correct += pred.eq(target.detach().view_as(pred)).sum().item()
-        if batch_idx % batch_log_interval == 0:
-            print('Train Epoch: {} [{: 6d}/{: 6d} ({:2.0f}%)]\tLoss: {:.4f}'.format(
-                epoch_num, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.item()))
+
     train_loss /= len(train_loader.dataset)
     pct_correct = 100. * correct / len(train_loader.dataset)
     return pct_correct, train_loss

@@ -2,6 +2,7 @@ from torch import nn
 import torch.nn.functional as F
 import torchvision.models as models
 import torch
+import math
 
 class Flatten(nn.Module):
     def forward(self, input):
@@ -21,7 +22,7 @@ class Classifier(nn.Module):
         x = self.fc(x)
         return F.log_softmax(x, dim=1)
 
-def get_resnet(encoder_name, num_classes, pretrained=True):
+def get_resnet(encoder_name, num_classes, pretrained=False):
     """
 
     :param encoder_name:
@@ -78,3 +79,17 @@ def get_resnet_mean_var(encoder_name, num_classes):
     mean_var.load_state_dict(mean_var_dict)
 
     return mean_var
+
+def _kaiming_normal(model):
+    for m in model.modules():
+        if isinstance(m, nn.Conv2d):
+            torch.nn.init.kaiming_normal_(m.weight.data, mode='fan_in', nonlinearity='relu')
+            if m.bias is not None:
+                m.bias.data.zero_()
+        elif isinstance(m, nn.BatchNorm2d):
+            m.weight.data.fill_(1)
+            m.bias.data.zero_()
+        elif isinstance(m, nn.Linear):
+            torch.nn.init.kaiming_normal_(m.weight.data, mode='fan_in', nonlinearity='relu')
+            m.bias.data.zero_()
+    return model
