@@ -4,6 +4,7 @@ from src.config import config
 from distutils.util import strtobool
 os.environ["CUDA_VISIBLE_DEVICES"] = str(config.device_id)
 import torch
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from intrinsic.fastfood import WrapFastfood
 from intrinsic.dense import WrapDense
 from src.models import RegularCNNModel, FCNAsInPAper, _kaiming_normal
@@ -76,6 +77,10 @@ def main(config):
         print('Parameter count, Grad: {}'.format(grad_total))
 
         model, optimizer = use_model(model, config.device, config.lr)
+        if model_type == "cnn":
+            # Add learning rate decay
+            scheduler = ReduceLROnPlateau(optimizer, 'max', patience=6)
+
         loss = torch.nn.NLLLoss()
 
         trainer = create_supervised_trainer(model, optimizer, loss, device="cuda")
@@ -103,6 +108,9 @@ def main(config):
             metrics = valid_evaluator.state.metrics
             writer.add_scalar("Accuracy/test/IntDim: {}".format(int_dim), metrics['accuracy'], trainer.state.epoch)
             writer.add_scalar("Loss/test/IntDim: {}".format(int_dim), metrics['nll'], trainer.state.epoch)
+
+            if model_type == "cnn":
+                scheduler.step(metrics['accuracy'])
 
         def score_function(engine):
             acc_test = valid_evaluator.state.metrics['accuracy']
