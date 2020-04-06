@@ -12,7 +12,7 @@ def get_loaders_mnist(root, use_cuda, batch_size, stats):
     :param batch_size:
     :return:
     """
-    loader_kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    loader_kwargs = {'num_workers': 0, 'pin_memory': True} if use_cuda else {}
 
     mnist_transform = transforms.Compose([
                            transforms.ToTensor(),
@@ -37,7 +37,7 @@ def get_loaders_cifar10(root, use_cuda, batch_size, stats):
     :param batch_size:
     :return:
     """
-    loader_kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    loader_kwargs = {'num_workers': 0, 'pin_memory': True} if use_cuda else {}
 
     transform_cifar10 = transforms.Compose([
         transforms.ToTensor(),
@@ -62,7 +62,7 @@ def get_loaders_cifar100(root, use_cuda, batch_size, stats):
     :param batch_size:
     :return:
     """
-    loader_kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    loader_kwargs = {'num_workers': 0, 'pin_memory': True} if use_cuda else {}
 
     transform_cifar100 = transforms.Compose([
         transforms.ToTensor(),
@@ -89,7 +89,7 @@ def get_loaders_custom(root_train, root_valid, use_cuda, batch_size=32, stats=No
     :param means: normalising stats
     :return:
     """
-    loader_kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
+    loader_kwargs = {'num_workers': 0, 'pin_memory': True} if use_cuda else {}
 
     if stats:
         transform = transforms.Compose([

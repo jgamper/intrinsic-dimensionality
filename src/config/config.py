@@ -3,7 +3,6 @@ n_epochs = 100
 exp_max = 5
 num_max = 5
 lr = 0.001
-batch_log_interval = 600
 device_id = 1
 
 tasks = {'MNIST': {'root': '/home/jevjev/Dropbox/Projects/datasets',
