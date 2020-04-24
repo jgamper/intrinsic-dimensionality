@@ -31,7 +31,7 @@ def main(dataset_path, results_path):
     :return:
     """
     dataset_name = os.path.basename(dataset_path)
-    assert dataset_path in list(config.tasks.keys()), "Don't have this dataset {}, or remove '/'".format(dataset_name)
+    assert dataset_name in list(config.tasks.keys()), "Don't have this dataset {}, or remove '/'".format(dataset_name)
 
     writer = get_writer(results_path)
 
