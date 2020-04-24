@@ -31,6 +31,8 @@ def main(dataset_path, results_path):
     :return:
     """
     dataset_name = os.path.basename(dataset_path)
+    assert dataset_path in list(config.tasks.keys()), "Don't have this dataset {}, or remove '/'".format(dataset_name)
+
     writer = get_writer(results_path)
 
     # Get intrinsic dimension options
@@ -42,12 +44,11 @@ def main(dataset_path, results_path):
         print('###############################')
         print('Testing intrinsic dimension: {}'.format(int_dim))
 
-        root = config.tasks[dataset_name]['root']
         stats = config.tasks[dataset_name]['stats']
         batch_size = config.tasks[dataset_name]['batch_size']
         num_classes = config.tasks[dataset_name]['num_classes']
 
-        train_loader, test_loader = get_loaders(root,
+        train_loader, test_loader = get_loaders(dataset_path,
                                                 batch_size,
                                                 stats)
 
