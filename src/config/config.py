@@ -5,6 +5,7 @@ num_max = 5
 lr = 0.001
 device_id = 1
 batch_size = 32
+seed = 32
 
 tasks = {
         'breast': {'stats': {'mean': (0.6685, 0.4844, 0.6638), 'std': (0.2205, 0.2397, 0.1844)},

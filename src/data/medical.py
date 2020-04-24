@@ -7,11 +7,12 @@ from typing import Tuple
 from src.data.utils import split
 
 @typechecked
-def get_loaders(root: str, batch_size: int, stats=None) -> Tuple[DataLoader, DataLoader]:
+def get_loaders(root: str, batch_size: int, seed: int, stats=None) -> Tuple[DataLoader, DataLoader]:
     """
     Reads the dataset and splits into training and validation
     :param root_train:
     :param batch_size:
+    :param seed:
     :param stats: Stats to normalise images
     :return:
     """
@@ -23,7 +24,7 @@ def get_loaders(root: str, batch_size: int, stats=None) -> Tuple[DataLoader, Dat
         ])
 
     dts = ImageFolder(root, transform=transform if stats else None)
-    train, test = split(dts, split_fraction=0.3, return_test=False)
+    train, test = split(dts, split_fraction=0.3, return_test=False, seed=seed)
 
     train_loader = DataLoader(train, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test, batch_size=1000, shuffle=False)

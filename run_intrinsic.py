@@ -46,11 +46,13 @@ def main(dataset_path, results_path):
 
         stats = config.tasks[dataset_name]['stats']
         batch_size = config.batch_size
+        seed = config.seed
         num_classes = config.tasks[dataset_name]['num_classes']
 
         train_loader, test_loader = get_loaders(dataset_path,
-                                                batch_size,
-                                                stats)
+                                                batch_size=batch_size,
+                                                stats=stats,
+                                                seed=seed)
 
 
         # Get model and wrap it in fastfood
