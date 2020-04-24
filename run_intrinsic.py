@@ -1,34 +1,37 @@
+"""Usage:
+          run_intrinsic.py [--root=<dataset_path>]  [--res_dir=<results_path>]
+
+@ Jevgenij Gamper 2020
+Sets up dvc with symlinks if necessary
+
+Options:
+  -h --help              Show help.
+  --version              Show version.
+  --root=<dataset_path>  Path to the dataset
+  --medical=<link>       Flag if training on medical data
+  --res_dir=<results_path>  Directory to store results
+"""
 import os
-import argparse
-from distutils.util import strtobool
+from docopt import docopt
 from src.config import config
 os.environ["CUDA_VISIBLE_DEVICES"] = str(config.device_id)
 import torch
 from intrinsic.fastfood import WrapFastfood
-from src.models import get_resnet, _kaiming_normal
+from src.models import get_resnet
 from src.data import get_loaders
 from src.utils import use_model, parameter_count
-from src.utils import get_writer, add_paths_to_config, get_exponential_range
+from src.utils import get_writer, get_exponential_range
 from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
 from ignite.metrics import Accuracy, Loss
 from ignite.handlers import EarlyStopping
 
-def main(config):
+def main(dataset_path, results_path):
     """
 
     :return:
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--task_name", help="Task name")
-    parser.add_argument("--he_normal", type=strtobool, default=False, help="If he normal init")
-    args = parser.parse_args()
-    task_name = args.task_name
-    he_normal = args.he_normal
-
-    # Sort out paths and get tensorboard write
-    config = add_paths_to_config(config)
-
-    writer = get_writer(config.tensorboard_dir)
+    dataset_name = os.path.basename(dataset_path)
+    writer = get_writer(results_path)
 
     # Get intrinsic dimension options
     intrinsic_array = get_exponential_range(config.exp_max, config.num_max)
@@ -39,26 +42,23 @@ def main(config):
         print('###############################')
         print('Testing intrinsic dimension: {}'.format(int_dim))
 
-        root = config.tasks[task_name]['root']
-        stats = config.tasks[task_name]['stats']
-        batch_size = config.tasks[task_name]['batch_size']
-        num_classes = config.tasks[task_name]['num_classes']
+        root = config.tasks[dataset_name]['root']
+        stats = config.tasks[dataset_name]['stats']
+        batch_size = config.tasks[dataset_name]['batch_size']
+        num_classes = config.tasks[dataset_name]['num_classes']
 
-        train_loader, test_loader = get_loaders(root, task_name,
-                                                True,
+        train_loader, test_loader = get_loaders(root,
                                                 batch_size,
                                                 stats)
 
 
         # Get model and wrap it in fastfood
         model = get_resnet("resnet18", num_classes).cuda()
-        if he_normal:
-            print("Using Kaiming He normal init")
-            model = _kaiming_normal(model)
+
         model = WrapFastfood(model, intrinsic_dimension=int_dim,
                              device=config.device)
 
-        writer.add_text(task_name, "Kaiming he normal: {}".format(he_normal), 0)
+        writer.add_text(dataset_name, "Kaiming he normal: {}".format(False), 0)
 
         grad_total = parameter_count(model)
         print('Parameter count, Grad: {}'.format(grad_total))
@@ -104,4 +104,7 @@ def main(config):
         writer.add_scalar("IntDimVSAcc", early_stop_handler.best_score, int_dim)
 
 if __name__ == '__main__':
-    main(config)
+    arguments = docopt(__doc__)
+    dataset_path = arguments['<dataset_path>']
+    results_path = arguments['<results_path>']
+    main(dataset_path, results_path)

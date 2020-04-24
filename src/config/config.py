@@ -4,31 +4,22 @@ exp_max = 5
 num_max = 5
 lr = 0.001
 device_id = 1
+batch_size = 32
 
-tasks = {'MNIST': {'root': '/home/jevjev/Dropbox/Projects/datasets',
-                    'stats': {'mean': (0.1307), 'std': (0.3081)},
-                    'batch_size': 32,
-                    'num_classes': 10},
-        'CIFAR100': {'root': '/home/jevjev/Dropbox/Projects/datasets',
-                    'stats': {'mean': (0.4914, 0.4822, 0.4465), 'std': (0.2023, 0.1994, 0.2010)},
-                    'batch_size': 32,
-                    'num_classes': 100},
-        'CIFAR10': {'root': '/home/jevjev/Dropbox/Projects/datasets',
-                    'stats': {'mean': (0.4914, 0.4822, 0.4465), 'std': (0.2023, 0.1994, 0.2010)},
-                    'batch_size': 32,
-                    'num_classes': 10},
-        'BREAST': {'root': '/media/mount2/AllTheTasks/Pathology/PatchClassification/breast/split',
-                     'stats': {'mean': (0.6685, 0.4844, 0.6638), 'std': (0.2205, 0.2397, 0.1844)},
-                     'batch_size': 32,
+tasks = {
+        'BREAST': {'stats': {'mean': (0.6685, 0.4844, 0.6638), 'std': (0.2205, 0.2397, 0.1844)},
                      'num_classes': 2},
-        'COLON': {'root': '/media/mount2/AllTheTasks/Pathology/PatchClassification/colon/split',
-                             'stats': {'mean': (0.7348, 0.5770, 0.7010), 'std': (0.2241, 0.2842, 0.2276)},
-                             'batch_size': 32,
-                             'num_classes': 9},
-        'LYMPHOMA': {'root': '/media/mount2/AllTheTasks/Pathology/PatchClassification/lymphoma/split',
-                             'stats': {'mean': (0.4125, 0.3381, 0.4149), 'std': (0.2068, 0.1937, 0.1913)},
-                             'batch_size': 32,
-                             'num_classes': 3}
+        'COLON': {'stats': {'mean': (0.7348, 0.5770, 0.7010), 'std': (0.2241, 0.2842, 0.2276)},
+                     'num_classes': 9},
+        'LYMPHOMA': {'stats': {'mean': (0.4125, 0.3381, 0.4149), 'std': (0.2068, 0.1937, 0.1913)},
+                     'num_classes': 3},
+        'LUNG': {'stats': {'mean': (0.7680, 0.6133, 0.7297), 'std': (0.1867, 0.2556, 0.2011)},
+                      'num_classes': 6},
+        'OVARY': {'root': '/media/mount2/AllTheTasks/Pathology/PatchClassification/ovarian/split',
+                  'stats': {'mean': (0.7301, 0.5199, 0.6619), 'std': (0.1690, 0.2129, 0.1583)},
+                  'num_classes': 5},
+        'ORAL': {'stats': {'mean': (0.7960, 0.7192, 0.8201), 'std': (0.1547, 0.1710, 0.1152)},
+                   'num_classes': 3},
+        'MENINGIOMA': {'stats': {'mean': (0.5648, 0.3882, 0.5284), 'std': (0.2492, 0.2009, 0.2280)},
+                  'num_classes': 4}
          }
-
-results_directory = "/home/jevjev/Int-dim-exp/"

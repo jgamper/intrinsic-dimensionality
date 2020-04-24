@@ -1,4 +1,11 @@
-import argparse
+"""Usage:
+          stats.py --root <path>
+
+Computes mean and standard deviation of the dataset per channel
+Options:
+    --root   path to the dataset
+"""
+from docopt import docopt
 import torch
 from tqdm import tqdm
 from torch.utils.data import DataLoader
@@ -50,8 +57,6 @@ def compute_stats(root):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--root", help="Path to dataset")
-    args = parser.parse_args()
-    root = args.root
+    arguments = docopt(__doc__)
+    root = arguments['<path>']
     compute_stats(root)
