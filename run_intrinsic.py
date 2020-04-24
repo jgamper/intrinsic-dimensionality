@@ -105,6 +105,7 @@ def main(dataset_path, results_path):
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
+    print(arguments)
     dataset_path = arguments['<dataset_path>']
     results_path = arguments['<results_path>']
     main(dataset_path, results_path)
