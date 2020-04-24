@@ -45,7 +45,7 @@ def main(dataset_path, results_path):
         print('Testing intrinsic dimension: {}'.format(int_dim))
 
         stats = config.tasks[dataset_name]['stats']
-        batch_size = config.tasks[dataset_name]['batch_size']
+        batch_size = config.batch_size
         num_classes = config.tasks[dataset_name]['num_classes']
 
         train_loader, test_loader = get_loaders(dataset_path,
