@@ -22,6 +22,7 @@ from src.data import get_loaders
 from src.utils import use_model, parameter_count
 from src.utils import get_writer, get_exponential_range
 from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
+from ignite.contrib.handlers.tqdm_logger import ProgressBar
 from ignite.metrics import Accuracy, Loss
 from ignite.handlers import EarlyStopping
 
@@ -70,6 +71,10 @@ def main(dataset_path, results_path):
         loss = torch.nn.NLLLoss()
 
         trainer = create_supervised_trainer(model, optimizer, loss, device="cuda")
+
+        pbar = ProgressBar()
+        pbar.attach(trainer, output_transform=lambda x: {'loss': x[3]})
+
         train_evaluator = create_supervised_evaluator(model,
                                                       metrics={
                                                           'accuracy': Accuracy(),
@@ -82,18 +87,21 @@ def main(dataset_path, results_path):
                                                       }, device="cuda")
 
         @trainer.on(Events.EPOCH_COMPLETED)
-        def log_training_results(trainer):
+        def log_training_results(engine):
             train_evaluator.run(train_loader)
             metrics = train_evaluator.state.metrics
-            writer.add_scalar("Accuracy/train/IntDim: {}".format(int_dim), metrics['accuracy'], trainer.state.epoch)
-            writer.add_scalar("Loss/train/IntDim: {}".format(int_dim), metrics['nll'], trainer.state.epoch)
+            writer.add_scalar("Accuracy/train/IntDim: {}".format(int_dim), metrics['accuracy'], engine.state.epoch)
+            writer.add_scalar("Loss/train/IntDim: {}".format(int_dim), metrics['nll'], engine.state.epoch)
 
         @trainer.on(Events.EPOCH_COMPLETED)
-        def log_training_results(trainer):
+        def log_validation_results(engine):
             valid_evaluator.run(test_loader)
             metrics = valid_evaluator.state.metrics
-            writer.add_scalar("Accuracy/test/IntDim: {}".format(int_dim), metrics['accuracy'], trainer.state.epoch)
-            writer.add_scalar("Loss/test/IntDim: {}".format(int_dim), metrics['nll'], trainer.state.epoch)
+            writer.add_scalar("Accuracy/test/IntDim: {}".format(int_dim), metrics['accuracy'], engine.state.epoch)
+            writer.add_scalar("Loss/test/IntDim: {}".format(int_dim), metrics['nll'], engine.state.epoch)
+            pbar.log_message(
+                "Validation Results - Epoch: {}  Avg score: {:.4f} Avg Loss: {:.2f}"
+                    .format(engine.state.epoch, metrics['accuracy'], loss))
 
         def score_function(engine):
             acc_test = valid_evaluator.state.metrics['accuracy']
