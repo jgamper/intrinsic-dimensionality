@@ -73,7 +73,7 @@ def main(dataset_path, results_path):
         trainer = create_supervised_trainer(model, optimizer, loss, device="cuda")
 
         pbar = ProgressBar()
-        pbar.attach(trainer, output_transform=lambda x: {'loss': x})
+        pbar.attach(trainer, output_transform=lambda x: {'loss': x.item()})
 
         train_evaluator = create_supervised_evaluator(model,
                                                       metrics={
