@@ -26,7 +26,7 @@ def get_loaders(root: str, batch_size: int, seed: int, stats=None) -> Tuple[Data
     dts = ImageFolder(root, transform=transform if stats else None)
     train, test = split(dts, split_fraction=0.3, return_test=False, seed=seed)
 
-    train_loader = DataLoader(train, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=16)
-    test_loader = DataLoader(test, batch_size=1000, shuffle=False, pin_memory=True, num_workers=16)
+    train_loader = DataLoader(train, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=0)
+    test_loader = DataLoader(test, batch_size=1000, shuffle=False, pin_memory=True, num_workers=0)
 
     return train_loader, test_loader
