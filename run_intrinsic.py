@@ -101,7 +101,7 @@ def main(dataset_path, results_path):
             writer.add_scalar("Loss/test/IntDim: {}".format(int_dim), metrics['nll'], engine.state.epoch)
             pbar.log_message(
                 "Validation Results - Epoch: {}  Avg score: {:.4f} Avg Loss: {:.2f}"
-                    .format(engine.state.epoch, metrics['accuracy'], loss))
+                    .format(engine.state.epoch, metrics['accuracy'], metrics['nll']))
 
         def score_function(engine):
             acc_test = valid_evaluator.state.metrics['accuracy']
