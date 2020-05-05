@@ -1,5 +1,5 @@
 """Usage:
-          run_intrinsic.py [--root=<dataset_path>] [--gpu=<id>]
+          run_intrinsic.py (--root=<dataset_path>) [--gpu=<id>]
 
 @ Jevgenij Gamper 2020
 Sets up dvc with symlinks if necessary
