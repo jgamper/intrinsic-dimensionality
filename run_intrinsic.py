@@ -91,15 +91,15 @@ def main(dataset_path, results_path):
         def log_training_results(engine):
             train_evaluator.run(train_loader)
             metrics = train_evaluator.state.metrics
-            wandb.log({"epoch".format(int_dim): engine.state.epoch, "int-dim: {}, train-acc": metrics['accuracy']})
-            wandb.log({"epoch".format(int_dim): engine.state.epoch, "int-dim: {}, train-loss": metrics['nll']})
+            wandb.log({"epoch": engine.state.epoch, "int-dim: {}; train-acc".format(int_dim): metrics['accuracy']})
+            wandb.log({"epoch": engine.state.epoch, "int-dim: {}; train-loss".format(int_dim): metrics['nll']})
 
         @trainer.on(Events.EPOCH_COMPLETED)
         def log_validation_results(engine):
             valid_evaluator.run(test_loader)
             metrics = valid_evaluator.state.metrics
-            wandb.log({"epoch".format(int_dim): engine.state.epoch, "int-dim: {}, test-acc": metrics['accuracy']})
-            wandb.log({"epoch".format(int_dim): engine.state.epoch, "int-dim: {}, test-loss": metrics['nll']})
+            wandb.log({"epoch": engine.state.epoch, "int-dim: {}; test-acc".format(int_dim): metrics['accuracy']})
+            wandb.log({"epoch": engine.state.epoch, "int-dim: {}; test-loss".format(int_dim): metrics['nll']})
             pbar.log_message(
                 "Validation Results - Epoch: {}  Avg score: {:.4f} Avg Loss: {:.2f}"
                     .format(engine.state.epoch, metrics['accuracy'], metrics['nll']))
@@ -113,7 +113,7 @@ def main(dataset_path, results_path):
 
         trainer.run(train_loader, max_epochs=config.n_epochs)
 
-        wandb.log({"intrinsic-dim": int_dim, "Accuracy": early_stop_handler.best_score})
+        wandb.log({"Final Accuracy": early_stop_handler.best_score}, step=int_dim)
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
