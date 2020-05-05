@@ -38,7 +38,9 @@ def main(dataset_path, results_path):
     # Get intrinsic dimension options
     intrinsic_array = get_exponential_range(config.exp_max, config.num_max)
 
-    wandb.init(project="Intrinsic dimensionality: {}".format(dataset_name))
+    wandb.init(project="intrinsic-dimensionality")
+
+    wandb.config.dataset_name = dataset_name
 
     # Iterate over intrinsic dimension size and
     # record highest achieved validation test_correct
