@@ -85,8 +85,8 @@ def main(dataset_path):
         def log_validation_results(engine):
             valid_evaluator.run(test_loader)
             metrics = valid_evaluator.state.metrics
-            wandb.log({"epoch": engine.state.epoch, "int-dim: {}; test-acc".format(int_dim): metrics['accuracy']})
-            wandb.log({"epoch": engine.state.epoch, "int-dim: {}; test-loss".format(int_dim): metrics['nll']})
+            # wandb.log({"epoch": engine.state.epoch, "int-dim: {}; test-acc".format(int_dim): metrics['accuracy']})
+            # wandb.log({"epoch": engine.state.epoch, "int-dim: {}; test-loss".format(int_dim): metrics['nll']})
             pbar.log_message(
                 "Validation Results - Epoch: {}  Avg score: {:.4f} Avg Loss: {:.2f}"
                     .format(engine.state.epoch, metrics['accuracy'], metrics['nll']))
