@@ -20,11 +20,12 @@ from intrinsic.fastfood import WrapFastfood
 from src.models import get_resnet
 from src.data import get_loaders
 from src.utils import use_model, parameter_count
-from src.utils import get_writer, get_exponential_range
+from src.utils import get_exponential_range
 from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
 from ignite.contrib.handlers.tqdm_logger import ProgressBar
 from ignite.metrics import Accuracy, Loss
 from ignite.handlers import EarlyStopping
+import wandb
 
 def main(dataset_path, results_path):
     """
@@ -34,10 +35,10 @@ def main(dataset_path, results_path):
     dataset_name = os.path.basename(dataset_path)
     assert dataset_name in list(config.tasks.keys()), "Don't have this dataset {}, or remove '/'".format(dataset_name)
 
-    writer = get_writer(results_path)
-
     # Get intrinsic dimension options
     intrinsic_array = get_exponential_range(config.exp_max, config.num_max)
+
+    wandb.init(project="Intrinsic dimensionality: {}".format(dataset_name))
 
     # Iterate over intrinsic dimension size and
     # record highest achieved validation test_correct
@@ -61,8 +62,6 @@ def main(dataset_path, results_path):
 
         model = WrapFastfood(model, intrinsic_dimension=int_dim,
                              device=config.device)
-
-        writer.add_text(dataset_name, "Kaiming he normal: {}".format(False), 0)
 
         grad_total = parameter_count(model)
         print('Parameter count, Grad: {}'.format(grad_total))
@@ -90,15 +89,15 @@ def main(dataset_path, results_path):
         def log_training_results(engine):
             train_evaluator.run(train_loader)
             metrics = train_evaluator.state.metrics
-            writer.add_scalar("Accuracy/train/IntDim: {}".format(int_dim), metrics['accuracy'], engine.state.epoch)
-            writer.add_scalar("Loss/train/IntDim: {}".format(int_dim), metrics['nll'], engine.state.epoch)
+            wandb.log({"epoch".format(int_dim): engine.state.epoch, "int-dim: {}, train-acc": metrics['accuracy']})
+            wandb.log({"epoch".format(int_dim): engine.state.epoch, "int-dim: {}, train-loss": metrics['nll']})
 
         @trainer.on(Events.EPOCH_COMPLETED)
         def log_validation_results(engine):
             valid_evaluator.run(test_loader)
             metrics = valid_evaluator.state.metrics
-            writer.add_scalar("Accuracy/test/IntDim: {}".format(int_dim), metrics['accuracy'], engine.state.epoch)
-            writer.add_scalar("Loss/test/IntDim: {}".format(int_dim), metrics['nll'], engine.state.epoch)
+            wandb.log({"epoch".format(int_dim): engine.state.epoch, "int-dim: {}, test-acc": metrics['accuracy']})
+            wandb.log({"epoch".format(int_dim): engine.state.epoch, "int-dim: {}, test-loss": metrics['nll']})
             pbar.log_message(
                 "Validation Results - Epoch: {}  Avg score: {:.4f} Avg Loss: {:.2f}"
                     .format(engine.state.epoch, metrics['accuracy'], metrics['nll']))
@@ -112,7 +111,7 @@ def main(dataset_path, results_path):
 
         trainer.run(train_loader, max_epochs=config.n_epochs)
 
-        writer.add_scalar("IntDimVSAcc", early_stop_handler.best_score, int_dim)
+        wandb.log({"intrinsic-dim": int_dim, "Accuracy": early_stop_handler.best_score})
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
