@@ -3,7 +3,6 @@ n_epochs = 100
 exp_max = 5
 num_max = 5
 lr = 0.001
-device_id = 1
 batch_size = 32
 seed = 32
 

@@ -1,5 +1,5 @@
 """Usage:
-          run_intrinsic.py [--root=<dataset_path>]  [--res_dir=<results_path>]
+          run_intrinsic.py [--root=<dataset_path>] [--gpu=<id>]
 
 @ Jevgenij Gamper 2020
 Sets up dvc with symlinks if necessary
@@ -8,26 +8,13 @@ Options:
   -h --help              Show help.
   --version              Show version.
   --root=<dataset_path>  Path to the dataset
-  --medical=<link>       Flag if training on medical data
-  --res_dir=<results_path>  Directory to store results
+  --gpu=<id>             GPU list. [default: 0]
 """
 import os
 from docopt import docopt
 from src.config import config
-os.environ["CUDA_VISIBLE_DEVICES"] = str(config.device_id)
-import torch
-from intrinsic.fastfood import WrapFastfood
-from src.models import get_resnet
-from src.data import get_loaders
-from src.utils import use_model, parameter_count
-from src.utils import get_exponential_range
-from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
-from ignite.contrib.handlers.tqdm_logger import ProgressBar
-from ignite.metrics import Accuracy, Loss
-from ignite.handlers import EarlyStopping
-import wandb
 
-def main(dataset_path, results_path):
+def main(dataset_path):
     """
 
     :return:
@@ -118,5 +105,19 @@ def main(dataset_path, results_path):
 if __name__ == '__main__':
     arguments = docopt(__doc__)
     dataset_path = arguments['--root']
-    results_path = arguments['--res_dir']
-    main(dataset_path, results_path)
+    gpu = arguments['--gpu']
+
+    os.environ["CUDA_VISIBLE_DEVICES"] = gpu
+    import torch
+    from intrinsic.fastfood import WrapFastfood
+    from src.models import get_resnet
+    from src.data import get_loaders
+    from src.utils import use_model, parameter_count
+    from src.utils import get_exponential_range
+    from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
+    from ignite.contrib.handlers.tqdm_logger import ProgressBar
+    from ignite.metrics import Accuracy, Loss
+    from ignite.handlers import EarlyStopping
+    import wandb
+
+    main(dataset_path)
