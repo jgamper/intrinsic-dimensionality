@@ -1,23 +1,17 @@
-"""
-Dense wrapper for intrinsic dimensionality estimation
-"""
 import torch
 from torch import nn
 
-class WrapDense(nn.Module):
+class DenseWrap(nn.Module):
 
-    def __init__(self, module, intrinsic_dimension, device=0, verbose=False):
+    def __init__(self, module, intrinsic_dimension, device=0):
         """
         Wrapper to estimate the intrinsic dimensionality of the
         objective landscape for a specific task given a specific model
         :param module: pytorch nn.Module
         :param intrinsic_dimension: dimensionality within which we search for solution
         :param device: cuda device id
-        :param verbose: if things should be printed out
         """
-        super(WrapDense, self).__init__()
-
-        self.verbose = verbose
+        super(DenseWrap, self).__init__()
 
         # Hide this from inspection by get_parameters()
         self.m = [module]
@@ -40,8 +34,6 @@ class WrapDense(nn.Module):
             # If the parameter requires gradient update
             if param.requires_grad:
 
-                if self.verbose: print(name, param.data.size(), v_size)
-
                 # Saves the initial values of the initialised parameters from param.data and sets them to no grad.
                 # (initial values are the 'origin' of the search)
                 self.initial_value[name] = v0 = param.clone().detach().requires_grad_(False).to(device)
@@ -56,9 +48,7 @@ class WrapDense(nn.Module):
                 # NOTE!: lines below are not clear!
                 base, localname = module, name
                 while '.' in localname:
-                    if self.verbose: print('Local name', localname)
                     prefix, localname = localname.split('.', 1)
-                    if self.verbose: print('Prefix', prefix, '  Name', name, '  Local name', localname)
                     base = base.__getattr__(prefix)
                 self.name_base_localname.append((name, base, localname))
 
@@ -68,12 +58,10 @@ class WrapDense(nn.Module):
     def forward(self, x):
         # Iterate over the layers
         for name, base, localname in self.name_base_localname:
-            # if self.verbose: print(name, base, localname)
-            # print(self.initial_value[name].size(), self.random_matrix[name].size(), self.V.size(),
-            #      torch.matmul(self.random_matrix[name], self.V).size())
 
             # Product between matrix P and \theta^{d}
             ray = torch.matmul(self.random_matrix[name], self.V)
+
             # Add the \theta_{0}^{D} to P \dot \theta^{d}
             param = self.initial_value[name] + torch.squeeze(ray, -1)
 

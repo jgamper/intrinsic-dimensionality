@@ -1,22 +1,19 @@
-"""
-Fastfood wrapper for intrinsic dimensionality estimation
-"""
 import torch
 from torch import nn
 import numpy as np
 from torch.nn import functional as F
 
-
-class WrapFastfood(nn.Module):
+class FastfoodWrap(nn.Module):
 
     def __init__(self, module, intrinsic_dimension, device=0):
         """
-
-        :param module:
-        :param intrinsic_dimension:
-        :param device:
+        Wrapper to estimate the intrinsic dimensionality of the
+        objective landscape for a specific task given a specific model using FastFood transform
+        :param module: pytorch nn.Module
+        :param intrinsic_dimension: dimensionality within which we search for solution
+        :param device: cuda device id
         """
-        super(WrapFastfood, self).__init__()
+        super(FastfoodWrap, self).__init__()
 
         # Hide this from inspection by get_parameters()
         self.m = [module]
