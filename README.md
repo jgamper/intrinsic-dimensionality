@@ -17,23 +17,31 @@
     <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/docs/source/imgs/star_syntax.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
 <p>
 
-# Quick Start
+# Quick Start for your task!
 
 ### Tissue mask and tiling pipeline
 ```python
-from syntax.slide import Slide
-from syntax.transformers.tissue_mask import OtsuTissueMask
-from syntax.transformers.tiling import SimpleTiling
-from syntax.transformers import Pipeline, visualize_pipeline_results
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = 0
+import torch
+import torchvision.models as models
+from intrinsic import FastFoodWrap
 
-slide = Slide(slide_path=slide_path)
-pipeline = Pipeline([OtsuTissueMask(), SimpleTiling(magnification=40,
-                                                  tile_size=224,
-                                                  max_per_class=10)])
-slide = pipeline.fit_transform(slide)
-visualize_pipeline_results(slide=slide,
-                           transformer_list=pipeline.transformers,
-                           title_list=['Tissue Mask', 'Random Tile Sampling'])
+def get_resnet(encoder_name, num_classes, pretrained=False):
+    assert encoder_name in ["resnet18", "resnet50"], "{} is a wrong encoder name!".format(encoder_name)
+    if encoder_name == "resnet18":
+        model = models.resnet18(pretrained=pretrained)
+        latent_dim = 512
+    else:
+        model = models.resnet50(pretrained=pretrained)
+        latent_dim = 2048
+    children = (list(model.children())[:-2] + [Classifier(latent_dim, num_classes)])
+    model = torch.nn.Sequential(*children)
+    return model
+
+   # Get model and wrap it in fastfood
+   model = get_resnet("resnet18", num_classes).cuda()
+   model = FastFoodWrap(model, intrinsic_dimension=100, device=0)
 ```
 <p align="center">
     <img src="https://raw.githubusercontent.com/jgamper/compay-syntax/master/docs/source/imgs/simple_pipeline.png?token=ADDZO4ISOOTTRG4MMPNYCXS6ZPXPS" width="600"/>
