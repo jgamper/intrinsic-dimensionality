@@ -30,8 +30,21 @@ This package includes fastfood and dense transformation wrappers for pytorch mod
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = DEVICE_NUM
 import torch
+from torch import nn
 import torchvision.models as models
 from intrinsic import FastFoodWrap
+
+class Classifier(nn.Module):
+    def __init__(self, input_dim, n_classes):
+        super(Classifier, self).__init__()
+        self.fc = nn.Linear(input_dim, n_classes)
+        self.maxpool = nn.AdaptiveMaxPool2d(1)
+
+    def forward(self, x):
+        x = self.maxpool(x)
+        x = x.reshape(x.size(0), -1)
+        x = self.fc(x)
+        return x
 
 def get_resnet(encoder_name, num_classes, pretrained=False):
     assert encoder_name in ["resnet18", "resnet50"], "{} is a wrong encoder name!".format(encoder_name)
