@@ -20,11 +20,11 @@
 # About
 
 This package includes fastfood and dense transformation wrappers for pytorch modules, primarily to reproduce results from
-[Li, Chunyuan, et al. "Measuring the intrinsic dimension of objective landscapes." arXiv preprint arXiv:1804.08838 (2018)](https://arxiv.org/abs/1804.08838).
+[Li, Chunyuan, et al. "Measuring the intrinsic dimension of objective landscapes." arXiv preprint arXiv:1804.08838 (2018)](https://arxiv.org/abs/1804.08838) - see below for info.
 
 # Install
 
-`pip install compay-syntax==0.4.0`
+`pip install intrinsic-dimensionality`
 
 # Quick start on your classification task!
 
