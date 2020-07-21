@@ -7,15 +7,7 @@
     </a>
 </p>
 
-* All contributions are welcome! Please raise an issue for a bug, feature or pull request!
-
-* <a href="https://twitter.com/share?" class="twitter-share-button" data-text="Check this out!" data-url="https://github.com/jgamper/intrinsic-dimensionality" data-show-count="false">Tweet</a> about this repo!
-
-* Give this repo a star! :star:
-
-<p align="center">
-    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/docs/source/imgs/star_syntax.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
-<p>
+All contributions are welcome! Please raise an issue for a bug, feature or pull request!
 
 # About
 
