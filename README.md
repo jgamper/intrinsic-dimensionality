@@ -17,6 +17,11 @@
     <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/docs/source/imgs/star_syntax.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
 <p>
 
+# About
+
+This package includes fastfood and dense transformation wrappers for pytorch modules, primarily to reproduce results from
+[]Li, Chunyuan, et al. "Measuring the intrinsic dimension of objective landscapes." arXiv preprint arXiv:1804.08838 (2018)](https://arxiv.org/abs/1804.08838).
+
 # Install
 
 `pip install compay-syntax==0.4.0`
@@ -49,7 +54,8 @@ model = FastFoodWrap(model, intrinsic_dimension=100, device=DEVICE_NUM)
 
 # Reproducing experiments from the paper
 
-Full thread [here](https://twitter.com/brutforcimag/status/1240335205807816705?s=20)
+Full thread about reproducibility results is available [here](https://twitter.com/brutforcimag/status/1240335205807816705?s=20).
+Note that some hyper-parameters were not listed in the paper - I raised issues on Uber's Github repo [here](https://github.com/uber-research/intrinsic-dimension/issues/5).
 
 I am able to reproduce their MNIST results with LR=0.0003, batch size 32 for both dense and fastfood transformations
 using FCN (fcn-dense, fcn-fastfood). However, not for LeNet (cnn-dense, cnn-fastfood).
