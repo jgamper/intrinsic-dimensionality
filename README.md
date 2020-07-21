@@ -12,7 +12,7 @@
 * Give this repo a star! :star:
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/docs/source/imgs/star_syntax.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
+    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/assets/intrinsic_star.png" width="600"/>
 <p>
 
 # About
@@ -59,12 +59,12 @@ I am able to reproduce their MNIST results with LR=0.0003, batch size 32 for bot
 using FCN (fcn-dense, fcn-fastfood). However, not for LeNet (cnn-dense, cnn-fastfood).
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/refactor/assets/mnist_reproduction.png?token=ADDZO4IHL3PNENJD6CP25GC7ECUBW" width="600"/>
+    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/assets/mnist_reproduction.png" width="600"/>
 <p>
 
 For CIFAR-10, with far larger resnet (Resnet-18 11mil param) vs 280k 20-layer resnet used in the paper,
 results appear to be similar. FCN results in appendix (Fig S7) suggest some variation is to be expected.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/refactor/assets/cifar10.png?token=ADDZO4OTCB5KWUX7HGJKRSS7ECVLI" width="600"/>
+    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/assets/cifar10.png" width="600"/>
 <p>
