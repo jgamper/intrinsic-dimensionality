@@ -17,12 +17,15 @@
     <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/docs/source/imgs/star_syntax.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
 <p>
 
-# Quick Start for your task!
+# Install
 
-### Tissue mask and tiling pipeline
+`pip install compay-syntax==0.4.0`
+
+# Quick start on your classification task!
+
 ```python
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = 0
+os.environ["CUDA_VISIBLE_DEVICES"] = DEVICE_NUM
 import torch
 import torchvision.models as models
 from intrinsic import FastFoodWrap
@@ -39,14 +42,10 @@ def get_resnet(encoder_name, num_classes, pretrained=False):
     model = torch.nn.Sequential(*children)
     return model
 
-   # Get model and wrap it in fastfood
-   model = get_resnet("resnet18", num_classes).cuda()
-   model = FastFoodWrap(model, intrinsic_dimension=100, device=0)
+# Get model and wrap it in fastfood
+model = get_resnet("resnet18", num_classes=YOUR_NUMBER_OF_CLASSES).cuda()
+model = FastFoodWrap(model, intrinsic_dimension=100, device=DEVICE_NUM)
 ```
 <p align="center">
     <img src="https://raw.githubusercontent.com/jgamper/compay-syntax/master/docs/source/imgs/simple_pipeline.png?token=ADDZO4ISOOTTRG4MMPNYCXS6ZPXPS" width="600"/>
 <p>
-
-# Install
-
-`pip install compay-syntax==0.4.0`
