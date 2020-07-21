@@ -1,3 +1,8 @@
+# About
+
+This package includes fastfood and dense transformation wrappers for pytorch modules, primarily to reproduce results from
+[Li, Chunyuan, et al. "Measuring the intrinsic dimension of objective landscapes." arXiv preprint arXiv:1804.08838 (2018)](https://arxiv.org/abs/1804.08838) - see below for info.
+
 * All contributions are welcome! Please raise an issue for a bug, feature or pull request!
 
 * Give this repo a star! :star:
@@ -5,11 +10,6 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/assets/intrinsic_star.png" width="600"/>
 <p>
-
-# About
-
-This package includes fastfood and dense transformation wrappers for pytorch modules, primarily to reproduce results from
-[Li, Chunyuan, et al. "Measuring the intrinsic dimension of objective landscapes." arXiv preprint arXiv:1804.08838 (2018)](https://arxiv.org/abs/1804.08838) - see below for info.
 
 # Install
 
