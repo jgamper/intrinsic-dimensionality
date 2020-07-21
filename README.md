@@ -1,12 +1,3 @@
-<p align="center">
-    <a href="https://github.com/jgamper/intrinsic-dimensionality/blob/master/LICENSE">
-        <img alt="GitHub" src="https://img.shields.io/github/license/jgamper/intrinsic-dimensionality.svg?color=blue">
-    </a>
-    <a href="https://github.com/jgamper/intrinsic-dimensionality/releases">
-        <img alt="GitHub release" src="https://img.shields.io/github/v/release/jgamper/intrinsic-dimensionality?include_prereleases">
-    </a>
-</p>
-
 * All contributions are welcome! Please raise an issue for a bug, feature or pull request!
 
 * Give this repo a star! :star:
