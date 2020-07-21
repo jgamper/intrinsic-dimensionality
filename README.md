@@ -7,7 +7,13 @@
     </a>
 </p>
 
-All contributions are welcome! Please raise an issue for a bug, feature or pull request!
+* All contributions are welcome! Please raise an issue for a bug, feature or pull request!
+
+* Give this repo a star! :star:
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/master/docs/source/imgs/star_syntax.png?token=ADDZO4PH6CJSK5XTSC2ZLXK6ZPXRY" width="600"/>
+<p>
 
 # About
 
