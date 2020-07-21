@@ -47,5 +47,5 @@ model = get_resnet("resnet18", num_classes=YOUR_NUMBER_OF_CLASSES).cuda()
 model = FastFoodWrap(model, intrinsic_dimension=100, device=DEVICE_NUM)
 ```
 <p align="center">
-    <img src="https://raw.githubusercontent.com/jgamper/compay-syntax/master/docs/source/imgs/simple_pipeline.png?token=ADDZO4ISOOTTRG4MMPNYCXS6ZPXPS" width="600"/>
+    <img src="https://raw.githubusercontent.com/jgamper/intrinsic-dimensionality/refactor/assets/mnist_reproduction.png?token=ADDZO4IHL3PNENJD6CP25GC7ECUBW" width="600"/>
 <p>
