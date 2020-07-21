@@ -1,8 +1,8 @@
 import torch
 from torch import nn
 
-class DenseWrap(nn.Module):
 
+class DenseWrap(nn.Module):
     def __init__(self, module, intrinsic_dimension, device=0):
         """
         Wrapper to estimate the intrinsic dimensionality of the
@@ -26,7 +26,7 @@ class DenseWrap(nn.Module):
 
         # Parameter vector that is updated, initialised with zeros as per text: \theta^{d}
         V = nn.Parameter(torch.zeros((intrinsic_dimension, 1)).to(device))
-        self.register_parameter('V', V)
+        self.register_parameter("V", V)
         v_size = (intrinsic_dimension,)
 
         # Iterates over layers in the Neural Network
@@ -36,19 +36,23 @@ class DenseWrap(nn.Module):
 
                 # Saves the initial values of the initialised parameters from param.data and sets them to no grad.
                 # (initial values are the 'origin' of the search)
-                self.initial_value[name] = v0 = param.clone().detach().requires_grad_(False).to(device)
+                self.initial_value[name] = v0 = (
+                    param.clone().detach().requires_grad_(False).to(device)
+                )
 
                 # If v0.size() is [4, 3], then below operation makes it [4, 3, v_size]
                 matrix_size = v0.size() + v_size
 
                 # Generates random projection matrices P, sets them to no grad
                 self.random_matrix[name] = (
-                            torch.randn(matrix_size, requires_grad=False).to(device) / intrinsic_dimension ** 0.5)
+                    torch.randn(matrix_size, requires_grad=False).to(device)
+                    / intrinsic_dimension ** 0.5
+                )
 
                 # NOTE!: lines below are not clear!
                 base, localname = module, name
-                while '.' in localname:
-                    prefix, localname = localname.split('.', 1)
+                while "." in localname:
+                    prefix, localname = localname.split(".", 1)
                     base = base.__getattr__(prefix)
                 self.name_base_localname.append((name, base, localname))
 

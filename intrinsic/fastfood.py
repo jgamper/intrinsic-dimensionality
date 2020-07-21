@@ -3,8 +3,8 @@ from torch import nn
 import numpy as np
 from torch.nn import functional as F
 
-class FastfoodWrap(nn.Module):
 
+class FastfoodWrap(nn.Module):
     def __init__(self, module, intrinsic_dimension, device=0):
         """
         Wrapper to estimate the intrinsic dimensionality of the
@@ -29,8 +29,8 @@ class FastfoodWrap(nn.Module):
         # Parameter vector that is updated
         # Initialised with zeros as per text: \theta^{d}
         V = nn.Parameter(torch.zeros((intrinsic_dimension)).to(device))
-        self.register_parameter('V', V)
-        v_size = (intrinsic_dimension, )
+        self.register_parameter("V", V)
+        v_size = (intrinsic_dimension,)
 
         # Iterate over layers in the module
         for name, param in module.named_parameters():
@@ -39,15 +39,17 @@ class FastfoodWrap(nn.Module):
 
                 # Saves the initial values of the initialised parameters from param.data and sets them to no grad.
                 # (initial values are the 'origin' of the search)
-                self.initial_value[name] = v0 = param.clone().detach().requires_grad_(False).to(device)
+                self.initial_value[name] = v0 = (
+                    param.clone().detach().requires_grad_(False).to(device)
+                )
 
                 # Generate fastfood parameters
                 DD = np.prod(v0.size())
                 self.fastfood_params[name] = fastfood_vars(DD, device)
 
                 base, localname = module, name
-                while '.' in localname:
-                    prefix, localname = localname.split('.', 1)
+                while "." in localname:
+                    prefix, localname = localname.split(".", 1)
                     base = base.__getattr__(prefix)
                 self.name_base_localname.append((name, base, localname))
 
@@ -62,7 +64,9 @@ class FastfoodWrap(nn.Module):
             DD = np.prod(init_shape)
 
             # Fastfood transform te replace dence P
-            ray = fastfood_torched(self.V, DD, self.fastfood_params[name]).view(init_shape)
+            ray = fastfood_torched(self.V, DD, self.fastfood_params[name]).view(
+                init_shape
+            )
 
             param = self.initial_value[name] + ray
 
@@ -84,16 +88,20 @@ def fast_walsh_hadamard_torched(x, axis=0, normalize=False):
     """
     orig_shape = x.size()
     assert axis >= 0 and axis < len(orig_shape), (
-            'For a vector of shape %s, axis must be in [0, %d] but it is %d'
-            % (orig_shape, len(orig_shape) - 1, axis))
+        "For a vector of shape %s, axis must be in [0, %d] but it is %d"
+        % (orig_shape, len(orig_shape) - 1, axis)
+    )
     h_dim = orig_shape[axis]
     h_dim_exp = int(round(np.log(h_dim) / np.log(2)))
     assert h_dim == 2 ** h_dim_exp, (
-            'hadamard can only be computed over axis with size that is a power of two, but'
-            ' chosen axis %d has size %d' % (axis, h_dim))
+        "hadamard can only be computed over axis with size that is a power of two, but"
+        " chosen axis %d has size %d" % (axis, h_dim)
+    )
 
     working_shape_pre = [int(np.prod(orig_shape[:axis]))]  # prod of empty array is 1 :)
-    working_shape_post = [int(np.prod(orig_shape[axis + 1:]))]  # prod of empty array is 1 :)
+    working_shape_post = [
+        int(np.prod(orig_shape[axis + 1 :]))
+    ]  # prod of empty array is 1 :)
     working_shape_mid = [2] * h_dim_exp
     working_shape = working_shape_pre + working_shape_mid + working_shape_post
 
@@ -111,6 +119,7 @@ def fast_walsh_hadamard_torched(x, axis=0, normalize=False):
     ret = ret.view(orig_shape)
 
     return ret
+
 
 def fastfood_vars(DD, device=0):
     """
@@ -138,6 +147,7 @@ def fastfood_vars(DD, device=0):
 
     return [BB, Pi, GG, divisor, LL]
 
+
 def fastfood_torched(x, DD, param_list=None, device=0):
     """
     Fastfood transform
@@ -156,7 +166,7 @@ def fastfood_torched(x, DD, param_list=None, device=0):
         BB, Pi, GG, divisor, LL = param_list
 
     # Padd x if needed
-    dd_pad = F.pad(x, pad=(0, LL - dd), value=0, mode='constant')
+    dd_pad = F.pad(x, pad=(0, LL - dd), value=0, mode="constant")
 
     # From left to right HGPiH(BX), where H is Walsh-Hadamard matrix
     mul_1 = torch.mul(BB, dd_pad)
@@ -172,6 +182,6 @@ def fastfood_torched(x, DD, param_list=None, device=0):
     # (HGPiHBX)
     mul_5 = fast_walsh_hadamard_torched(mul_4, 0, normalize=False)
 
-    ret = torch.div(mul_5[:DD], divisor*np.sqrt(float(DD) / LL))
+    ret = torch.div(mul_5[:DD], divisor * np.sqrt(float(DD) / LL))
 
     return ret
