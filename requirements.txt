@@ -3,7 +3,7 @@ cycler==0.10.0
 decorator==4.4.2
 future==0.18.2
 ipykernel==5.3.3
-ipython==7.16.1
+ipython==7.16.3
 ipython-genutils==0.2.0
 jedi==0.17.2
 jupyter-client==6.1.6
